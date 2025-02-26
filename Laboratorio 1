@@ -1,0 +1,48 @@
+int led = 6;
+int pul = 7;
+int buzzer = 5;
+int ledAzul = 11;
+int ledVerde = 10;
+int ledRojo = 9;
+int Buzzer = 0;
+
+#define PIN_SENSOR A0
+int ValorTemp, ValorMv, ValorPWM;
+
+void setup() {
+  pinMode(led, OUTPUT);
+  pinMode(pul, INPUT);
+  pinMode(buzzer, OUTPUT);
+  pinMode(ledAzul, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
+  pinMode(ledRojo, OUTPUT);
+  
+  Serial.begin(9600);
+}
+
+void loop() {
+  ValorTemp = analogRead(PIN_SENSOR);
+  ValorMv = map(ValorTemp, 0, 1023, 0, 5000);  
+  ValorPWM = ValorMv / 10;
+  
+  Serial.println(ValorPWM);
+
+  if (ValorPWM <= 15) {
+    digitalWrite(ledVerde, HIGH);
+  } 
+  if (ValorPWM > 15 && ValorPWM < 26) {
+    digitalWrite(ledAzul, HIGH);
+  } 
+  if (ValorPWM >= 26) {
+    digitalWrite(ledRojo, HIGH);
+    digitalWrite(buzzer, HIGH);
+    digitalWrite(led, HIGH);
+  }
+
+ 
+  if (digitalRead(pul) == HIGH) {
+    digitalWrite(buzzer, LOW);
+  }
+
+  delay(50);
+}
