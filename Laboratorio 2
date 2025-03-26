@@ -1,0 +1,53 @@
+// Definición de pines
+const int lm35Pin = A0;  // Sensor LM35 en el pin analógico A0
+const int rojo = 3;    //  Rojo
+const int verde = 5; // Verde
+const int azul = 6;  //  Azul
+const int rele = 8;  // Relé 
+
+
+const float tempHigh = 30.0; // Temperatura límite para activar el ventilador
+
+void setup() {
+    Serial.begin(9600);
+    pinMode(rojo, OUTPUT);
+    pinMode(verde, OUTPUT);
+    pinMode(azul, OUTPUT);
+    pinMode(rele, OUTPUT);
+    
+}
+
+void loop() {
+   
+    int sensorValue = analogRead(lm35Pin);
+    float temperature = sensorValue * (5.0 / 1023.0) * 100.0;
+
+    Serial.print("Temperatura: ");
+    Serial.print(temperature);
+    Serial.println(" °C");
+
+    // Control del LED RGB según la temperatura
+    if (temperature < 20) { 
+        setColor(255, 255, 0); // Azul 
+        digitalWrite(rele, LOW);
+    } else if (temperature >= 20 && temperature < 25) { 
+        setColor(255, 0, 255); // Verde
+        digitalWrite(rele, LOW); 
+    } else if (temperature >= 25 && temperature < 30) { 
+        setColor(0, 0, 255); 
+        digitalWrite(rele, HIGH);
+    } else { 
+        setColor(0, 255, 255); // Rojo 
+    }
+
+    // relé 
+    if (temperature >= tempHigh) {
+      digitalWrite(rele, LOW);
+      Serial.println("Encendido");
+    } 
+}
+void setColor(int red, int green, int blue) {
+    analogWrite(rojo, 255 - red);
+    analogWrite(verde, 255 - green);
+    analogWrite(azul, 255 - blue);
+}
